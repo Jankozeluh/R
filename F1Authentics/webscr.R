@@ -1,6 +1,6 @@
 library(tidyverse)#full library(tidyverse) maybe useful but not necessary if you want to just get the data use dplyr instead
 library(rvest)
-#library(lubridate)  not actually used, but pretty nice library if you want to do something more with dates
+#library(lubridate)  not actually used, but pretty nice package if you want to do something more with dates
 #library(ggthemes) for some pretty graph templates(themes) - not necessary
 
 lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
