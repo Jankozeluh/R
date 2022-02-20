@@ -33,7 +33,7 @@ summonerMatches <- function(name, region, start, count) {
   }
 }
 
-closer_match_info <- function (match_id, region, timeline){
+closer_match_info <- function (match_id, region, timeline){ #must be updated soon
   if(region != "europe" || "americas" || "asia"){
     m_url <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, if(timeline) "/timeline", "?api_key=", api_key, sep = "", collapse = "")
 

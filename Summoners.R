@@ -1,8 +1,8 @@
 Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
-options("scipen"=100, "digits"=4)
+options("scipen" = 100, "digits" = 4)
 
-api_key <- "RGAPI-XXXX"
+api_key <- "RGAPI-edcac5df-7ffe-48fe-b97a-c76bbed21035"
 
 name <- "Agurin"
 region <- "euw1"
@@ -36,23 +36,41 @@ match_history <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/mat
   httr::content(.$id, as = 'text') %>%
   jsonlite::fromJSON(.)
 
-closer <- function (match_id){
-  link <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, "?api_key=", api_key, sep = "", collapse = "") %>%
+closer <- function(match_id) {
+  link <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, "/timeline", "?api_key=", api_key, sep = "", collapse = "") %>%
     httr::GET(.) %>%
     httr::content(., as = 'text') %>%
     jsonlite::fromJSON(.)
   return(link)
 }
 
-closer_match_history_info <- lapply(match_history,closer)
+closer_match_history_info <- lapply(match_history, closer)
 
 #gameEnd(Creation) - milliseconds
 #gameDuration - seconds
 
-end_time <- c[[1]]$info$gameCreation/1000
+
+closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
+closer_match_history_info[[1]]$info$frames$events[[3]] %>% count()
+closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
+
+closer_match_history_info[[1]]$info$frames$participantFrames$`1`
+closer_match_history_info[[1]]$info$frames$participantFrames$`1`$minionsKilled
+closer_match_history_info[[1]]$info$frames$participantFrames$`1`$goldPerSecond
+
+closer_match_history_info[[1]]$info$frames$timestamp
+
+
+cl <- closer_match_history_info[[1]]$info$frames$events[[4]]$timestamp
+
+cl
+
+end_time <- closer_match_history_info[[1]]$info$gameCreation / 1000
 end_time
 seconds_to_period(end_time)
-as.POSIXct(end_time, origin="1970-01-01")
+as.POSIXct(end_time, origin = "1970-01-01")
+
+
 
 summonerInfo <- function(name, region) {
   m_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")
@@ -80,7 +98,7 @@ summonerInfo <- function(name, region) {
     httr::content(.$id, as = 'text') %>%
     jsonlite::fromJSON(.)
 
-  closer <- function (match_id){
+  closer <- function(match_id) {
     link <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, "?api_key=", api_key, sep = "", collapse = "") %>%
       httr::GET(.) %>%
       httr::content(., as = 'text') %>%
@@ -88,10 +106,11 @@ summonerInfo <- function(name, region) {
     return(link)
   }
 
-  closer_match_history_info <- lapply(match_history,closer)
+  closer_match_history_info <- lapply(match_history, closer)
 
 
   return(closer_match_history_info) #not gonna work like this at the end
 }
 
 summonerInfo('Agurin', 'euw1')
+# 60032
