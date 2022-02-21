@@ -1,8 +1,9 @@
 Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
-options("scipen" = 100, "digits" = 4)
+options("scipen" = 10, "digits" = 2)
 
-api_key <- "RGAPI-XXXX"
+api_key <- "RGAPI-XXXXXX"
+#
 
 name <- "Agurin"
 region <- "euw1"
@@ -58,6 +59,7 @@ closer_match_history_info[[1]]$info$frames$participantFrames$`1`
 closer_match_history_info[[1]]$info$frames$participantFrames$`1`$minionsKilled
 closer_match_history_info[[1]]$info$frames$participantFrames$`1`$goldPerSecond
 
+
 closer_match_history_info[[1]]$info$frames$timestamp
 
 
@@ -65,11 +67,10 @@ cl <- closer_match_history_info[[1]]$info$frames$events[[4]]$timestamp
 
 cl
 
-end_time <- closer_match_history_info[[1]]$info$gameCreation / 1000
+end_time <- closer_match_history_info[[1]]$info$frames$timestamp / 1000
 end_time
-seconds_to_period(end_time)
+seconds_to_period(end_time) %>% round(2)
 as.POSIXct(end_time, origin = "1970-01-01")
-
 
 
 summonerInfo <- function(name, region) {
