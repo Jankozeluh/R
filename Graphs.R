@@ -60,7 +60,7 @@ playersInfoApplied$`1`
 #   labs(x = "Response (on a 1 to 5 scale)", y = "Number of respondents"))
 ggplot(playersInfoApplied$`1`, aes(timestampApi, crG)) +
   geom_line() +
-  facet_wrap(vars(xp))+
+  facet_wrap(vars(xp)) +
   theme_dark()
 #Rnd - not working right now
 
@@ -71,6 +71,40 @@ ggplot(playersInfoApplied$`1`, aes(timestampApi, crG)) +
 (xpOverTime <- ggplot(playersInfoApplied$`1`, aes(x = timestampApi, y = xp)) +
   geom_line() +
   xlab(""))
+
+# Graph tutorial - https://youtu.be/HPJn1CMvtmI
+ggplot(data = BOD, mapping = aes(x = Time, y = demand)) +
+  geom_line(color = "blue") +
+  geom_point(size = 5, color = "pink") +
+  geom_smooth()
+
+CO2 %>%
+  ggplot(aes(conc, uptake, color = Treatment)) +
+  geom_point(size = 3, alpha = 0.5) +
+  geom_smooth(method = lm, se = F) +
+  facet_wrap(~Type) +
+  labs(title = "Concentration of co2") +
+  theme_dark()
+
+CO2 %>%
+  ggplot(aes(Treatment, uptake)) +
+  geom_boxplot() +
+  geom_point(alpha = 0.5, aes(size = conc, color = Plant)) +
+  facet_wrap(~Type) +
+  coord_flip() +
+  theme_bw() +
+  labs(title = "Chilled ~ Non-chilled")
+
+mpg %>%
+  filter(cty < 25) %>%
+  ggplot(aes(displ, cty)) +
+  geom_point(aes(color = drv, size = trans), alpha = 0.5) +
+  geom_smooth(method = lm) +
+  facet_wrap(~year, nrow = 1) +
+  labs(x = "Eng size",
+       y = "MPG in the city",
+       title = "Fuel ef")+
+  theme_classic()
 
 
 
