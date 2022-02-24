@@ -2,12 +2,13 @@ Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
 options("scipen" = 10, "digits" = 2)
 
-api_key <- "RGAPI-XXXXX"
+api_key <- "RGAPI-XXXXXXXXX"
 #
 
 name <- "Agurin"
 region <- "euw1"
 m_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")
+m_url
 
 m_content <- httr::GET(m_url) %>%
   httr::content(., as = 'text') %>%
