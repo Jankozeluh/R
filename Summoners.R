@@ -2,7 +2,7 @@ Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
 options("scipen" = 10, "digits" = 2)
 
-api_key <- "RGAPI-XXXXXXXXX"
+api_key <- "RGAPI-XXXX"
 #
 
 name <- "Agurin"
