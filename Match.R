@@ -32,7 +32,6 @@ summonerMatches <- function(name, region, start, count) {
     print("start match-id must be lower than end")
   }
 }
-
 closer_match_info <- function (match_id, region, timeline){ #must be updated soon
   if(region != "europe" || "americas" || "asia"){
     m_url <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, if(timeline) "/timeline", "?api_key=", api_key, sep = "", collapse = "")
@@ -50,3 +49,28 @@ closer_match_info <- function (match_id, region, timeline){ #must be updated soo
 
 summonerMatches('Agurin', 'euw1', 0, 20)
 closer_match_info("EUW1_5729711315", "europe", FALSE)
+
+#gameEnd(Creation) - milliseconds
+#gameDuration - seconds
+closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
+end_time <- closer_match_history_info[[1]]$info$frames$timestamp / 1000
+end_time
+seconds_to_period(end_time) %>% round(2)
+as.POSIXct(end_time, origin = "1970-01-01")
+
+matchHistoryGraphs <- function (player){
+  name <- player$summonerInfo$name
+  info <- player$closer_match_history_info[[1]]$info$participants
+
+  sumId <- match(name,info$summonerName)
+
+
+  gg <- info[[1]][[sumId]]
+
+  return(list(gg,names(info)))
+}
+
+count(info)
+Agurin$closer_match_history_info[[1]]$info$participants[[1]][[4]]
+
+matchHistoryGraphs(Agurin)
