@@ -2,7 +2,7 @@ Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
 options("scipen" = 10, "digits" = 2)
 
-api_key <- "RGAPI-XXXXXX"
+api_key <- "RGAPI-XXXX"
 #
 summonerInfo <- function(name, region, start, count) {
   summoner_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")

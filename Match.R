@@ -58,53 +58,95 @@ end_time
 seconds_to_period(end_time) %>% round(2)
 as.POSIXct(end_time, origin = "1970-01-01")
 
-matchHistoryGraphs <- function (player){
+matchHistoryStats <- function (player){
   name <- player$summonerInfo$name
-  info <- player$closer_match_history_info#[[1]]$info$participants
+  closer_m <- player$closer_match_history_info#[[1]]$info$participants
 
-  sumId <- match(name,info$summonerName[[1]]$info$participants)
-
-  # gg <- info[[1]][[sumId]]
-  bg <- function (info){
-    sumId <- match(name,info$info$participants$summonerName)
-
-    app <- info$info$participants
-    slice <- slice(app,sumId)
+  matchstats_individual <- function (clm){
+    sumId <- match(name,clm$info$participants$summonerName)
+      part <- clm$info$participants
+      slice <- slice(part,sumId)
     return(slice)
   }
-  # for(i in seq_len(length(info))){
-  #
-  # }
-  lap <- lapply(info,bg)
 
-  return(list(lap,names(info[[1]]$info$participants)))
+  lap <- lapply(closer_m,matchstats_individual)
+
+  return(list(match_stats=lap))
 }
 
-ncol(info)
-sumId <- 4
-ggs <- Agurin$closer_match_history_info[[1]]$info$participants
+winRate <- function (individual){
+  un <- individual$match_stats
 
-full <- function (part){
-  print(part[[sumId]])
+  counting <- function (match){
+    nm <- match %>%  select(win) %>% as.integer()
+    return(nm)
+  }
+  vec_gw <- lapply(un,counting) %>% unlist()
+
+  wr <- (sum(vec_gw)/length(un))*100
+  message <- paste0("Winrate of ", un[[1]]$summonerName, " is ", wr, "% over last ", length(un), " games.")
+
+  return(message)
 }
 
-Agurin$closer_match_history_info %>% length()
+getStat <- function (individual,stat){
+  gt <- individual$match_stats
 
-info %>% slice()
+  stats <- function (match){
+    nm <- match %>%  select(stat)
+    return(nm)
+  }
+  vec_gw <- lapply(gt,stats) %>% unlist() %>% Reduce(c,.)
 
-nn <- ggs %>% slice(., sumId)  # how is it so easy
+  print(paste0("The stat u choosed (", stat, ") over last ", length(gt), " games is in the variable."))
 
-ggs$challenges$deathsByEnemyChamps[[4]]
-nn$challenges$deathsByEnemyChamps
+  return(vec_gw)
+}
 
-bbb <- lapply(ggs,full)
+
+
+Agurin_individual <- matchHistoryStats(Agurin)
+Agurin_individual$match_stats[[1]]$summonerName %>% length()
+
+winRate(Agurin_individual)
+championName <- getStat(Agurin_individual, "championName")
+assists <- getStat(Agurin_individual, "assists")
+
+str(assists)
+summary(assists)
+summary(championName)
+
+# ncol(info)
+# sumId <- 4
+# ggs <- Agurin$closer_match_history_info[[1]]$info$participants
+#
+# full <- function (part){
+#   print(part[[sumId]])
+# }
+#
+# Agurin$closer_match_history_info %>% length()
+#
+# info %>% slice()
+#
+# nn <- ggs %>% slice(., sumId)  # how is it so easy
+#
+# ggs$challenges$deathsByEnemyChamps[[4]]
+# nn$challenges$deathsByEnemyChamps
+#
+# bbb <- lapply(ggs,full)
 
 # for (i in count(ggs[[1]][[1]])){
 #   print(ggs[[i]][[sumId]])
 # }
 
-mm <- matchHistoryGraphs(Agurin)
+# mm[[1]][[1]]$
+# mm[[1]] %>% group_by(summonerName)
 
+# capture.output(mm, file = "agurin.csv")
+
+# write.csv(mm[[1]],paste0(getwd(),"/Agurin.csv"))
+# library("DataExplorer")
+# DataExplorer doesnt work in DataSpell for some reason
 # matchHistoryTimelineGraphs <- function (){
 #
 # }
