@@ -60,17 +60,51 @@ as.POSIXct(end_time, origin = "1970-01-01")
 
 matchHistoryGraphs <- function (player){
   name <- player$summonerInfo$name
-  info <- player$closer_match_history_info[[1]]$info$participants
+  info <- player$closer_match_history_info#[[1]]$info$participants
 
-  sumId <- match(name,info$summonerName)
+  sumId <- match(name,info$summonerName[[1]]$info$participants)
 
+  # gg <- info[[1]][[sumId]]
+  bg <- function (info){
+    sumId <- match(name,info$info$participants$summonerName)
 
-  gg <- info[[1]][[sumId]]
+    app <- info$info$participants
+    slice <- slice(app,sumId)
+    return(slice)
+  }
+  # for(i in seq_len(length(info))){
+  #
+  # }
+  lap <- lapply(info,bg)
 
-  return(list(gg,names(info)))
+  return(list(lap,names(info[[1]]$info$participants)))
 }
 
-count(info)
-Agurin$closer_match_history_info[[1]]$info$participants[[1]][[4]]
+ncol(info)
+sumId <- 4
+ggs <- Agurin$closer_match_history_info[[1]]$info$participants
 
-matchHistoryGraphs(Agurin)
+full <- function (part){
+  print(part[[sumId]])
+}
+
+Agurin$closer_match_history_info %>% length()
+
+info %>% slice()
+
+nn <- ggs %>% slice(., sumId)  # how is it so easy
+
+ggs$challenges$deathsByEnemyChamps[[4]]
+nn$challenges$deathsByEnemyChamps
+
+bbb <- lapply(ggs,full)
+
+# for (i in count(ggs[[1]][[1]])){
+#   print(ggs[[i]][[sumId]])
+# }
+
+mm <- matchHistoryGraphs(Agurin)
+
+# matchHistoryTimelineGraphs <- function (){
+#
+# }
