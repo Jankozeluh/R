@@ -1,55 +1,3 @@
-summonerMatches <- function(name, region, start, count) {
-  if (start < count) {
-    m_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")
-    puuid <- httr::GET(m_url) %>%
-      httr::content(r_result, as = 'text') %>%
-      jsonlite::fromJSON(.) %>%
-      .$puuid
-
-    americas <- c("br1", "na1", "la1", "la2", "oc1")
-    europe <- c("euw1", "eune1")
-    asia <- c("kr", "tr1", "jp1", "ru")
-
-    if (region %in% americas) {
-      region <- "americas"
-    }else if (region %in% europe) {
-      region <- "europe"
-    }else if (region %in% asia) {
-      region <- "asia"
-    }else {
-      return("BG, wrong region.")
-    }
-
-    m_url <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/by-puuid/", puuid, "/ids?start=", start, "&count=", count, "&api_key=", api_key, sep = "", collapse = "")
-
-    m_content <- httr::GET(m_url) %>%
-      httr::content(., as = 'text') %>%
-      jsonlite::fromJSON(.)
-
-    dplyr::glimpse(m_content)
-  }
-  else {
-    print("start match-id must be lower than end")
-  }
-}
-closer_match_info <- function (match_id, region, timeline){ #must be updated soon
-  if(region != "europe" || "americas" || "asia"){
-    m_url <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, if(timeline) "/timeline", "?api_key=", api_key, sep = "", collapse = "")
-
-    m_content <- httr::GET(m_url) %>%
-      httr::content(., as = 'text') %>%
-      jsonlite::fromJSON(.)
-
-    # print(m_url)
-    dplyr::glimpse(m_content)
-  }else{
-    print("BG, wrong region(here are only three - europe, asia, americas)")
-  }
-}
-
-summonerMatches('Agurin', 'euw1', 0, 20)
-closer_match_info("EUW1_5729711315", "europe", FALSE)
-
 #gameEnd(Creation) - milliseconds
 #gameDuration - seconds
 closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
@@ -73,7 +21,6 @@ matchHistoryStats <- function (player){
 
   return(list(match_stats=lap))
 }
-
 winRate <- function (individual){
   un <- individual$match_stats
 
@@ -88,12 +35,11 @@ winRate <- function (individual){
 
   return(message)
 }
-
 getStat <- function (individual,stat){
   gt <- individual$match_stats
 
   stats <- function (match){
-    nm <- match %>%  select(stat)
+    nm <- match %>%  select(all_of(stat))
     return(nm)
   }
   vec_gw <- lapply(gt,stats) %>% unlist() %>% Reduce(c,.)
@@ -102,19 +48,46 @@ getStat <- function (individual,stat){
 
   return(vec_gw)
 }
+champsPlayed <- function (individual){
+  st <- individual$match_stats
 
+  champ <- function (match){
+    nm <- match %>%  select(championName)
+    return(nm)
+  }
+
+  champPer <- lapply(st,champ) %>% unlist() %>% factor() %>% summary() %>% sort(decreasing = TRUE)
+
+  print("All played champions and their frequency are in the variable.")
+  return(list(champsOcc=champPer))
+}
 
 
 Agurin_individual <- matchHistoryStats(Agurin)
 Agurin_individual$match_stats[[1]]$summonerName %>% length()
 
+
+
+champ <- function (match){
+  nm <- match %>%  select(championName)
+  return(nm)
+}
+(dd <- lapply(Agurin_individual$match_stats,champ) %>% unlist() %>% factor() %>% table())# %>% max())
+
 winRate(Agurin_individual)
 championName <- getStat(Agurin_individual, "championName")
 assists <- getStat(Agurin_individual, "assists")
+goldEarned <- getStat(Agurin_individual, "goldEarned")
 
 str(assists)
 summary(assists)
 summary(championName)
+
+sum(championName=="Khazix")
+
+hist(goldEarned, main = "earned golds")
+
+c_occurrences  <- champsPlayed(Agurin_individual)
 
 # ncol(info)
 # sumId <- 4
