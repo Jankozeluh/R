@@ -1,10 +1,10 @@
 #gameEnd(Creation) - milliseconds
 #gameDuration - seconds
-closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
-end_time <- closer_match_history_info[[1]]$info$frames$timestamp / 1000
-end_time
-seconds_to_period(end_time) %>% round(2)
-as.POSIXct(end_time, origin = "1970-01-01")
+# closer_match_history_info[[1]]$info$frames$events[[3]] %>% names()
+# end_time <- closer_match_history_info[[1]]$info$frames$timestamp / 1000
+# end_time
+# seconds_to_period(end_time) %>% round(2)
+# as.POSIXct(end_time, origin = "1970-01-01")
 
 matchHistoryStats <- function (player){
   name <- player$summonerInfo$name
