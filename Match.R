@@ -61,18 +61,41 @@ champsPlayed <- function (individual){
   print("All played champions and their frequency are in the variable.")
   return(list(champsOcc=champPer))
 }
+summonersFromMatch <- function (match){
+  info <- match$info$participants
+  return(list(summonners = info$summonerName, champions = info$championName))
+}
+
+summonersFromMatchHistory <- function (player){
+  matchHist <- player$closer_match_history_info
+
+  info <- function (match){
+    summoner <- match$info$participants$summonerName
+    champ <- match$info$participants$championName
+    return(list(summoner=summoner,champion=champ))
+  }
+
+  done <- lapply(matchHist,info)
+
+  return(done)
+}
+
+match <- summonersFromMatch(Agurin$closer_match_history_info[[1]])
+matchH <- summonersFromMatchHistory(Agurin)
 
 
 Agurin_individual <- matchHistoryStats(Agurin)
 Agurin_individual$match_stats[[1]]$summonerName %>% length()
-
-
 
 champ <- function (match){
   nm <- match %>%  select(championName)
   return(nm)
 }
 (dd <- lapply(Agurin_individual$match_stats,champ) %>% unlist() %>% factor() %>% table())# %>% max())
+
+matchChamps <- Agurin$closer_match_history_info[[1]]$info$participants$championName
+matchSummoners <- Agurin$closer_match_history_info[[1]]$info$participants$summonerName
+c(matchChamps,matchSummoners)
 
 winRate(Agurin_individual)
 championName <- getStat(Agurin_individual, "championName")
@@ -88,6 +111,8 @@ sum(championName=="Khazix")
 hist(goldEarned, main = "earned golds")
 
 c_occurrences  <- champsPlayed(Agurin_individual)
+
+Peng <- summonerInfo(matchH[[17]]$summoner[8])
 
 # ncol(info)
 # sumId <- 4

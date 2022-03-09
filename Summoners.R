@@ -4,7 +4,7 @@ options("scipen" = 10, "digits" = 2)
 
 api_key <- "RGAPI-XXXX"
 #
-summonerInfo <- function(name, region, start, count) {
+summonerInfo <- function(name, region="euw1", start=0, count=20) {
   summoner_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")
 
   summoner <- httr::GET(summoner_url) %>%
