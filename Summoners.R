@@ -2,9 +2,11 @@ Packages <- c("tidyverse", "httr", "jsonlite", "lubridate")
 lapply(Packages, library, character.only = TRUE)
 options("scipen" = 10, "digits" = 2)
 
+setwd("XXXXX")
+
 api_key <- "RGAPI-XXXX"
 #
-summonerInfo <- function(name, region="euw1", start=0, count=20) {
+summonerInfo <- function(name, region="euw1", start=0, count=20, timeline=FALSE) {
   summoner_url <- paste0("https://", region, ".api.riotgames.com/lol/summoner/v4/summoners/by-name/", name, "?api_key=", api_key, sep = "", collapse = "")
 
   summoner <- httr::GET(summoner_url) %>%
@@ -31,7 +33,7 @@ summonerInfo <- function(name, region="euw1", start=0, count=20) {
     jsonlite::fromJSON(.)
 
   closer <- function(match_id) {
-    link <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, "?api_key=", api_key, sep = "", collapse = "") %>%
+    link <- paste0("https://", region, ".api.riotgames.com/lol/match/v5/matches/", match_id, if(timeline==TRUE) "/timeline" else "" ,"?api_key=", api_key, sep = "", collapse = "") %>%
       httr::GET(.) %>%
       httr::content(., as = 'text') %>%
       jsonlite::fromJSON(.)
@@ -43,6 +45,5 @@ summonerInfo <- function(name, region="euw1", start=0, count=20) {
   return(list(closer_match_history_info = closer_match_history_info, summonerInfo = summoner))
 }
 
-Agurin <- summonerInfo('Agurin', 'euw1', 0, 20)
-
+Agurin <- summonerInfo('Agurin', 'euw1', 0, 20, TRUE)
 # 60032
